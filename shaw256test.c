@@ -7,7 +7,8 @@ char gnome[33];
 int finalBin = 0;
 int recursionAdd = 0;
 int i;
-int numI;
+int numI = 0;
+int begPad = 0;
 int ascii;
 int binS;
 int dig, revNumber;
@@ -18,13 +19,18 @@ int numToBin(ascii) {
     return 0;
   }
   if (ascii == 0) {
+    while (numI < 8) {
+      finalBin = finalBin * 10;
+      numI++;
+    }
     return finalBin;
   }
 
   finalBin = finalBin * 10;
   finalBin = ascii % 2 + finalBin;
-  // printf("\nBIN: %d\n", finalBin);
-  // printf("\nASCII: %d\n", ascii);
+  if (finalBin == 0) {
+    begPad++;
+  }
   numI++;
   return numToBin(ascii / 2, finalBin);
 }
@@ -32,36 +38,38 @@ int numToBin(ascii) {
 int main() {
   int n;
   printf("plug ur thing in: ");
-  //  scanf("%s", gnome);
   fgets(gnome, 33, stdin);
 
   for (i = 0; gnome[i] != 0; i++) {
     finalBin = 0;
     n = 0;
-    // printf("\ni is %d", i);
-    // printf("\n it num %d", i);
     ascii = gnome[i];
-    printf("\nSHIT %08d", numToBin(ascii));
     finalBin = 0;
-    //  printf("\nchar %c", gnome[i]);
-    // printf("\n%d", ascii);
-    n = numToBin(ascii);
-    // printf("\n%d", ascii);
 
+    // calls numToBin function and passes ascii, sets n to that //
+    n = numToBin(ascii);
+    int padEnd = 0;
+    int ii = 0;
+
+    // reverse binary //
     revNumber = 0;
     while (n > 0) {
       dig = n % 10;
+      ii++;
       revNumber = (revNumber * 10) + dig;
       n = n / 10;
     }
-    // double revNumber = (revNumber * 0.001) - 0.101;
-    // double revNumber = revNumber;
-    //  printf("\n rev %d", revNumber);
+    while (begPad != 0) {
+      revNumber = revNumber * 10;
+      begPad--;
+    }
+
+    printf("\nFinal Binary: %08d", revNumber);
     numI = 0;
     /*if (revNumber == 101) {
       revNumber = 1;
     }*/
-    printf("\n%d", revNumber);
+    // printf("\n%d", revNumber);
   }
   // printf("\n\n%d", numToBin(ascii));
 }
