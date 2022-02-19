@@ -10,11 +10,11 @@ char gnome[33];
 char addedBin[498];
 int finalBin = 0;
 int recursionAdd = 0;
-int i;
 int numI = 0;
 int begPad = 0;
 int ascii;
 int binS;
+unsigned int strToInt[300];
 int dig, revNumber;
 int addBin;
 
@@ -48,7 +48,10 @@ int main() {
   printf("plug ur thing in: ");
   fgets(gnome, 33, stdin);
 
-  for (i = 0; gnome[i] != 0; i++) {
+  // iterates through array of user input, converts to ascii, binary, then
+  // appends it to revPadded
+  for (int i = 0; gnome[i] != 0; i++) {
+    numI = 0;
     finalBin = 0;
     n = 0;
     ascii = gnome[i];
@@ -74,57 +77,47 @@ int main() {
       begPad--;
     }
 
-    // printf("\nFinal Binary: %08d", revNumber);
-    numI = 0;
-
+    // pads each byte with 0 to beg
     sprintf(revPadded, "%08d", revNumber);
-    // printf("\n%s", revPadded);
-
+    // appends revPadded to addedBin
     strncat(addedBin, revPadded, 8);
-
-    // printf("\nadded %s", addedBin);
   }
 
   int strLength = 0;
 
-  for (int vi = 0; addedBin[vi] != 0 && addedBin[vi] != 0; vi++) {
+  // iterates through to check for length of string
+  for (int vi = 0; addedBin[vi] != 0; vi++) {
     strLength++;
-    // printf("\n string length: %d", strLength);
   }
 
+  // append 0 to end of string until string length == 448
   while (strLength < 448) {
     strncat(addedBin, &bruhz, 1);
     strLength++;
   }
-  printf("\n string pad %s", addedBin);
-  printf("\nstring length final is:%d", strLength);
-  long double unpaddedAdded = 0;
+
+  // printf("\n string pad %s", addedBin);
+  // printf("\nstring length final is: %d", strLength);
+
+  // need this to properly check char in array
   char testOZ;
 
-  char *ptr;
-  long ret;
-
-  ret = strtoul(addedBin, &ptr, 10);
-  printf("\nThe number(unsigned long integer) is %lu\n", ret);
-
   // Converting string addedBin to an int
-  /*for (int iii; addedBin[iii] != 0; iii++) {
+  for (int iii; addedBin[iii] != 0; iii++) {
     // Compare if char in array addedBin is zero
     testOZ = addedBin[iii];
 
     if (strcmp(&testOZ, zero) == 0) {
-      unpaddedAdded = (unpaddedAdded * 10);
+      strToInt[iii] = 0;
     }
     // Compare if char in array addedBin is one
     if (strcmp(&testOZ, one) == 0) {
-      unpaddedAdded = (unpaddedAdded * 10) + 1;
+      strToInt[iii] = 1;
     }
-  }*/
+  }
+  printf("\nunsigned int is: ");
 
-  unpaddedAdded = unpaddedAdded / 100000000;
-
-  // printf("\nunpaddedAdded is %Lf", unpaddedAdded);
-
-  // printf("\nPADDEDADDED is %0448Lf", unpaddedAdded);
-  //  printf("\n\n%d", numToBin(ascii));
+  for (int i = 0; i < 448; i++) {
+    printf("%u", strToInt[i]);
+  }
 }
