@@ -12,9 +12,9 @@ int finalBin = 0;
 int recursionAdd = 0;
 int numI = 0;
 int begPad = 0;
-int ascii;
 int binS;
 unsigned int strToInt[300];
+int ascii;
 int dig, revNumber;
 int addBin;
 
@@ -47,9 +47,8 @@ int numToBin(ascii) {
 }
 
 int main() {
-  char padSixtyFour[84];
   int n;
-  char revPadded[18 + 1];
+  char revPadded[90];
   char bruhz = '0';
   printf("plug ur thing in: ");
   fgets(gnome, 33, stdin);
@@ -65,7 +64,6 @@ int main() {
 
     // calls numToBin function and passes ascii, sets n to that //
     n = numToBin(ascii);
-    int padEnd = 0;
     int ii = 0;
 
     // reverse binary //
