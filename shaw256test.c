@@ -18,11 +18,14 @@ unsigned int strToInt[300];
 int dig, revNumber;
 int addBin;
 
+// takes ascii and converts it to binary, does so recursively
 int numToBin(ascii) {
-
+  // return 0 on return ascii // biproduct of fgets
   if (ascii == 10 && numI == 0) {
     return 0;
   }
+  // once done recursing, it will == 0, pad ending with 0 until finalBin is 8
+  // bits
   if (ascii == 0) {
     while (numI < 8) {
       finalBin = finalBin * 10;
@@ -31,8 +34,11 @@ int numToBin(ascii) {
     return finalBin;
   }
 
+  // actual binary alg, move down 1 decimal, divide by 2 get remainder, append
+  // to finalBin
   finalBin = finalBin * 10;
   finalBin = ascii % 2 + finalBin;
+  // if the binary starts with zeros, count how many zeros and append them later
   if (finalBin == 0) {
     begPad++;
   }
@@ -95,9 +101,6 @@ int main() {
     strncat(addedBin, &bruhz, 1);
     strLength++;
   }
-
-  // printf("\n string pad %s", addedBin);
-  // printf("\nstring length final is: %d", strLength);
 
   // need this to properly check char in array
   char testOZ;
