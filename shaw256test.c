@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define zero "0"
-#define one "1"
+#define ZERO "0"
+#define ONE "1"
 
 char gnome[33];
 char addedBin[498];
@@ -21,12 +21,12 @@ int addBin;
 // takes ascii and converts it to binary, does so recursively
 int numToBin(ascii) {
   // return 0 on return ascii // biproduct of fgets
-  if (ascii == 10 && numI == 0) {
+  if (ascii == 10 && !numI) {
     return 0;
   }
   // once done recursing, it will == 0, pad ending with 0 until finalBin is 8
   // bits
-  if (ascii == 0) {
+  if (!ascii) {
     while (numI < 8) {
       finalBin = finalBin * 10;
       numI++;
@@ -108,11 +108,14 @@ int main() {
     // Compare if char in array addedBin is zero
     testOZ = addedBin[iii];
 
-    if (strcmp(&testOZ, zero) == 0) {
+    /*if (strcmp(&testOZ, zero) == 0) {
+      strToInt[iii] = 0;
+    }*/
+    if (!strcmp(&testOZ, ZERO)) {
       strToInt[iii] = 0;
     }
     // Compare if char in array addedBin is one
-    if (strcmp(&testOZ, one) == 0) {
+    if (!strcmp(&testOZ, ONE)) {
       strToInt[iii] = 1;
     }
   }
@@ -121,4 +124,6 @@ int main() {
   for (int i = 0; i < 448; i++) {
     printf("%u", strToInt[i]);
   }
+
+  // strToInt[440, 448] = { 0, 1, 1, 1, 1, 1, 0, 0 }
 }
