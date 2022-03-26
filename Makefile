@@ -1,6 +1,9 @@
+CC=gcc
+DEP=sha256rewrite.c
+FLAGS=-Wall -g3 -J4
 
 clean:
-	rm shaw256test.out
+	rm -f sha256.out
 
 install:
-	gcc shaw256test.c -lm -o shaw256test.out -Wall
+	$(CC) $(DEP) $(FLAGS) -o sha256.out

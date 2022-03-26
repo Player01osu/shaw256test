@@ -1,0 +1,6 @@
+
+.ccls-cache
+tests
+.prettierrc
+shaw256test.c
+shaw256test.out
