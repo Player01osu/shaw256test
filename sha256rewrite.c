@@ -11,7 +11,7 @@ static char buffer[BUFFERSIZE];
 char userIn[120], userInB[120], c;
 int bi[512];
 
-/*typedef union messu { // message schedules
+typedef union messu { // message schedules
   struct mess {
     int *w0[16], *w1[16], *w2[16], *w3[16], *w4[16], *w5[16], *w6[16], *w7[16],
         *w8[16], *w9[16], *w10[16], *w11[16], *w12[16], *w13[16], *w14[16],
@@ -32,7 +32,7 @@ messu setsched(int bi[512]) { // set message schedule
   for (int i = 0; i < 512; ++i)
     ssched.s[i] = &bi[i];
   return ssched;
-}*/
+}
 
 char *stringtobinary(char *s) {
   // Converts string to binary
@@ -63,33 +63,19 @@ void preprocess() {
 
   short int pi;
 
-  // char cbuffer[CBUFFERSIZE];
-  //  strcpy(cbuffer, stringtobinary(userIn));
-  // for (int i = 0; stringtobinary(userIn)[i] != '\000'; ++i)
-  // cbuffer[i] = stringtobinary(userIn)[i];
+  for (pi = 0; stringtobinary(userIn)[pi] != '\000'; ++pi)
+    bi[pi] = stringtobinary(userIn)[pi];
 
-  for (pi = 0; stringtobinary(userIn)[pi] != '\000'; ++pi) {
-    char cbuffer[CBUFFERSIZE];
-    // if (pi != strlen(stringtobinary(userIn))) {
-    // char *pen[CBUFFERSIZE];
-    // pen[pi] = &stringtobinary(userIn)[pi];
-    cbuffer[pi] = stringtobinary(userIn)[pi];
-    // bi[pi] = atoi(&stringtobinary(userIn)[pi]);
-    bi[pi] = atoi(&cbuffer[pi]);
-    // bi[pi] = atoi(pen[pi]);
-    // }
-  }
   bi[pi] = 1;
-
-  /*int a[64] = {0}, n = strlen(stringtobinary(userIn));
+  for (pi = pi; pi < 448; ++pi)
+    bi[pi] = '0';
+  int a[64] = {0}, n = strlen(stringtobinary(userIn));
   for (int i = 0; n > 0; i++) { // lazy dec to bin
     a[i] = n % 2;
     n = n / 2;
   }
-  for (int ii = 0, i = 512; i > 449; --i, ++ii) { // append to end
-    int b = a[ii];
-    bi[i] = b;
-  }*/
+  for (int ii = 0, i = 512; i > 448; --i, ++ii) // append to end
+    bi[i] = a[ii] + 48;
 }
 
 int main() {
@@ -101,12 +87,12 @@ int main() {
     userIn[i] = userInB[i];
 
   preprocess(); // binary 512 bits
-  // setsched(bi); // assigns message schedule
+  setsched(bi); // assigns message schedule
 
   for (int i = 0; i != 513; ++i)
-    printf("%d", bi[i]);
+    printf("%c", bi[i]);
   printf("\n");
-  // for (int i = 0; i < 16; ++i)
-  // printf("%d", *setsched(bi).mess.w1[i]);
+  for (int i = 0; i < 16; ++i)
+    printf("%c", *setsched(bi).mess.w3[i]);
   return EXIT_SUCCESS;
 }

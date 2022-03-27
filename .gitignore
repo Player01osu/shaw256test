@@ -4,3 +4,5 @@ tests
 .prettierrc
 shaw256test.c
 shaw256test.out
+sha256rewrite.c.~1~
+sha256rewrite.cbak
