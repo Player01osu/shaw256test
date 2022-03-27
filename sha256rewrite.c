@@ -1,16 +1,17 @@
-#include <math.h>
+//#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define BUFFERSIZE 256
+#define CBUFFERSIZE 512
 
 static char buffer[BUFFERSIZE];
 
 char userIn[120], userInB[120], c;
 int bi[512];
 
-typedef union messu {
+/*typedef union messu { // message schedules
   struct mess {
     int *w0[16], *w1[16], *w2[16], *w3[16], *w4[16], *w5[16], *w6[16], *w7[16],
         *w8[16], *w9[16], *w10[16], *w11[16], *w12[16], *w13[16], *w14[16],
@@ -25,13 +26,13 @@ typedef union messu {
   int *s[1024];
 } messu;
 
-messu setsched(int bi[512]) {
+messu setsched(int bi[512]) { // set message schedule
   messu ssched;
   // struct mess *sched_ptr = &sched;
   for (int i = 0; i < 512; ++i)
     ssched.s[i] = &bi[i];
   return ssched;
-}
+}*/
 
 char *stringtobinary(char *s) {
   // Converts string to binary
@@ -54,11 +55,6 @@ char *stringtobinary(char *s) {
   return binary;
 }
 
-typedef struct messched {
-  short int w0[32], w1[32], w2[32], w3[32], w4[32], w5[32], w6[32], w7[32],
-      w8[32], w9[32], w10[32], w11[32], w12[32], w13[32], w14[32], w15[32];
-} messched;
-
 void preprocess() {
   // converts input to binary, adds bit bit
   // pad with 0 til 64 before 512, fill rest
@@ -67,16 +63,25 @@ void preprocess() {
 
   short int pi;
 
+  // char cbuffer[CBUFFERSIZE];
+  //  strcpy(cbuffer, stringtobinary(userIn));
+  // for (int i = 0; stringtobinary(userIn)[i] != '\000'; ++i)
+  // cbuffer[i] = stringtobinary(userIn)[i];
+
   for (pi = 0; stringtobinary(userIn)[pi] != '\000'; ++pi) {
-    if (pi != strlen(stringtobinary(userIn))) {
-      char cbuffer[512];
-      cbuffer[pi] = stringtobinary(userIn)[pi];
-      bi[pi] = atoi(&cbuffer[pi]);
-    }
+    char cbuffer[CBUFFERSIZE];
+    // if (pi != strlen(stringtobinary(userIn))) {
+    // char *pen[CBUFFERSIZE];
+    // pen[pi] = &stringtobinary(userIn)[pi];
+    cbuffer[pi] = stringtobinary(userIn)[pi];
+    // bi[pi] = atoi(&stringtobinary(userIn)[pi]);
+    bi[pi] = atoi(&cbuffer[pi]);
+    // bi[pi] = atoi(pen[pi]);
+    // }
   }
   bi[pi] = 1;
 
-  int a[64] = {0}, n = strlen(stringtobinary(userIn));
+  /*int a[64] = {0}, n = strlen(stringtobinary(userIn));
   for (int i = 0; n > 0; i++) { // lazy dec to bin
     a[i] = n % 2;
     n = n / 2;
@@ -84,10 +89,8 @@ void preprocess() {
   for (int ii = 0, i = 512; i > 449; --i, ++ii) { // append to end
     int b = a[ii];
     bi[i] = b;
-  }
+  }*/
 }
-
-void assmessbl() {}
 
 int main() {
 
@@ -98,12 +101,12 @@ int main() {
     userIn[i] = userInB[i];
 
   preprocess(); // binary 512 bits
-  setsched(bi); // assigns message schedule
+  // setsched(bi); // assigns message schedule
 
   for (int i = 0; i != 513; ++i)
     printf("%d", bi[i]);
   printf("\n");
-  for (int i = 0; i < 16; ++i)
-    printf("%d", *setsched(bi).mess.w1[i]);
+  // for (int i = 0; i < 16; ++i)
+  // printf("%d", *setsched(bi).mess.w1[i]);
   return EXIT_SUCCESS;
 }
