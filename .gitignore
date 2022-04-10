@@ -6,3 +6,11 @@ shaw256test.c
 shaw256test.out
 sha256rewrite.c.~1~
 sha256rewrite.cbak
+functions/-Wall
+functions/.clang-format
+functions/3
+functions/a.out
+.clang-format
+sha256.out
+sha256.out
+e.txt
