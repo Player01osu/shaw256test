@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-g3",
+      "-std=c99",
+      "-o",
+      "sha256.out",
+      "sha256.c"
+    ],
+    "directory": "/home/bruh/Documents/code/c/shaw256test",
+    "file": "/home/bruh/Documents/code/c/shaw256test/sha256.c",
+    "output": "/home/bruh/Documents/code/c/shaw256test/sha256.out"
+  }
+]

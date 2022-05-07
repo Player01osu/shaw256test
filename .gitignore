@@ -14,3 +14,8 @@ functions/a.out
 sha256.out
 sha256.out
 e.txt
+.cache/clangd/index
+onlykeepingforrecordkeepings
+a.out
+sha256rewrite.c
+sha256rewrite.c

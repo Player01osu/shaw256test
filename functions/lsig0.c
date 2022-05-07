@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <memory.h>
 
 #define BINARY "00000000000000000011111111111111"
 #define LENGTH 32
@@ -67,8 +68,14 @@ char *lsig0(char bi[32])
     return x(x(rotr(bi, 7), rotr(bi, 18)), shr(bi, 3));
 }
 
+void destroyp(char *p)
+{
+    free(p);
+}
+
 int main()
 {
     char bi[32] = BINARY;
     printf("%s\n", lsig0(bi));
+    destroyp(x(x(rotr(bi, 7), rotr(bi, 18)), shr(bi, 3)));
 }

@@ -1,6 +1,6 @@
 CC=gcc
-DEP=sha256rewrite.c
-FLAGS=-Wall -g3 -J4
+DEP=sha256.c
+FLAGS=-Wall -g3 -lm -std=c99
 
 clean:
 	rm -f sha256.out

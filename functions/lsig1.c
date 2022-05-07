@@ -58,17 +58,17 @@ char *x(char s1[32], char s2[32])
     return xorf;
 }
 
-char *lsig0(char bi[32])
+char *lsig(char bi[32], unsigned short o, unsigned short t, unsigned short r)
 {
     // xor of rotr 17 rotr 19 and shr 10
     if (bi == NULL)
         return 0; // return empty string
 
-    return x(x(rotr(bi, 17), rotr(bi, 19)), shr(bi, 10));
+    return x(x(rotr(bi, o), rotr(bi, t)), shr(bi, r));
 }
 
 int main()
 {
     char bi[32] = BINARY;
-    printf("%s\n", lsig0(bi));
+    printf("%s, %lu\n", lsig(bi, 17, 19, 10), strlen(lsig(bi, 17, 19, 10)));
 }
