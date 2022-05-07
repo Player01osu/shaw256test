@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 /* macros */
+#define LENGTH 32
 #define MIN16 512
 #define MIN15 480
 #define MIN7 224
@@ -20,52 +21,33 @@ char *shr(char s[32], unsigned short __);
 char *stringtobinary(char *s);
 char *x(char s1[32], char s2[32]);
 
-char *stringtobinary(char *s)
-{
-	if (s == NULL)
-		return 0; /* no input string */
-	size_t len = strlen(s);
-	char *binary = malloc(len * 8 + 1);
+char buffer[32];
 
-	/* at the end for null terminator */
-	binary[0] = '\0';
-	for (size_t i = 0; i < len; ++i) {
-		char ch = s[i];
-		for (int j = 7; j >= 0; --j) {
-			if (ch & (1 << j)) {
-				strcat(binary, "1");
-			} else {
-				strcat(binary, "0");
-			}
-		}
+char *addbin(char a[32], char b[32])
+{
+	char t[32];
+	char *fin = malloc(sizeof(char) * 32);
+	char c = '0';
+
+	for (int i = 31; i >= 0; --i) {
+		t[i] = (a[i] ^ b[i]) ^ c;
+		c = ((a[i] ^ b[i]) & c) | (a[i] & b[i]);
 	}
-	return binary;
+
+	for (int i = 0; i < 32; ++i)
+		fin[i] = t[i];
+
+	return fin;
 }
 
-/*
- * Sets up the binary to be hashed and compressed by adding '1' to
- * end, and encoding length to end of last 32 bits and malloc amount
- * of space by multiple of 512
- */
-char *init(char *s)
+ /* choice of char a or b based off w */
+char *choice(char w[32], char a[32], char b[32])
 {
-	size_t lens = (sizeof(char) + strlen(s) / 512) * 512;
-	char *padBin = malloc(lens);
-	for (size_t i = 0; i < strlen(s); ++i)
-		padBin[i] = s[i];
-	for (size_t i = strlen(s) + 1; i < lens - 32; ++i)
-		padBin[i] = '0';
+	char *c = malloc(strlen(w) / 4 + 1);
 
-	padBin[strlen(s)] = '1';
-
-	int a[64] = { 0 }, n = strlen(s);
-	for (int i = 0; n > 0; i++) { /* lazy dec to bin */
-		a[i] = n % 2;
-		n = n / 2;
-	}
-	for (int j = 0, i = 511; i > 448; --i, ++j) /* append to end */
-		padBin[i] = a[j] + 48;
-	return padBin;
+	for (size_t i = 0; i < strlen(w) / 3; ++i)
+		c[i] = (w[i] == '0') ? a[i] : b[i];
+	return c;
 }
 
 /*
@@ -98,19 +80,42 @@ void createmesssched(char *s)
 	free(s);
 }
 
- /* xors two strings */
-char *x(char s1[32], char s2[32])
+/*
+ * Sets up the binary to be hashed and compressed by adding '1' to
+ * end, and encoding length to end of last 32 bits and malloc amount
+ * of space by multiple of 512
+ */
+char *init(char *s)
 {
-	if (s1 == NULL || s2 == NULL)
-		return 0; // return empty string
-	char *xorf = malloc(sizeof(char) * 32);
-	for (size_t i = 0; i < strlen(s1); ++i)
-		xorf[i] = (s1[i] ^ s2[i]) + 48;
-	return xorf;
+	size_t lens = (sizeof(char) + strlen(s) / 512) * 512;
+	char *padBin = malloc(lens);
+	for (size_t i = 0; i < strlen(s); ++i)
+		padBin[i] = s[i];
+	for (size_t i = strlen(s) + 1; i < lens - 32; ++i)
+		padBin[i] = '0';
+
+	padBin[strlen(s)] = '1';
+
+	int a[64] = { 0 }, n = strlen(s);
+	for (int i = 0; n > 0; i++) { /* lazy dec to bin */
+		a[i] = n % 2;
+		n = n / 2;
+	}
+	for (int j = 0, i = 511; i > 448; --i, ++j) /* append to end */
+		padBin[i] = a[j] + 48;
+	return padBin;
 }
 
-char buffer[32];
-#define LENGTH 32
+
+char *lsig(char s[32], bool isSigOne)
+{
+	if (s == NULL)
+		return 0; /* empty string */
+	if (!isSigOne)
+		return x(x(rotr(s, 7), rotr(s, 18)), shr(s, 3));
+	else
+		return x(x(rotr(s, 17), rotr(s, 19)), shr(s, 10));
+}
 
  /* rotate strings right, string wrap */
 char *rotr(char s[32], unsigned short __)
@@ -151,14 +156,37 @@ char *shr(char s[32], unsigned short __)
 	return shr;
 }
 
-char *lsig(char s[32], bool isSigOne)
+char *stringtobinary(char *s)
 {
 	if (s == NULL)
-		return 0; /* empty string */
-	if (!isSigOne)
-		return x(x(rotr(s, 7), rotr(s, 18)), shr(s, 3));
-	else
-		return x(x(rotr(s, 17), rotr(s, 19)), shr(s, 10));
+		return 0; /* no input string */
+	size_t len = strlen(s);
+	char *binary = malloc(len * 8 + 1);
+
+	/* at the end for null terminator */
+	binary[0] = '\0';
+	for (size_t i = 0; i < len; ++i) {
+		char ch = s[i];
+		for (int j = 7; j >= 0; --j) {
+			if (ch & (1 << j)) {
+				strcat(binary, "1");
+			} else {
+				strcat(binary, "0");
+			}
+		}
+	}
+	return binary;
+}
+
+ /* xors two strings */
+char *x(char s1[32], char s2[32])
+{
+	if (s1 == NULL || s2 == NULL)
+		return 0; // return empty string
+	char *xorf = malloc(sizeof(char) * 32);
+	for (size_t i = 0; i < strlen(s1); ++i)
+		xorf[i] = (s1[i] ^ s2[i]) + 48;
+	return xorf;
 }
 
 /*char *usig(char bi[32], unsigned short o, unsigned short t, unsigned short r)
@@ -170,32 +198,6 @@ char *lsig(char s[32], bool isSigOne)
 	return x(x(rotr(bi, o), rotr(bi, t)), rotr(bi, r));
 }*/
 
-char *addbin(char a[32], char b[32])
-{
-	char t[32];
-	char *fin = malloc(sizeof(char) * 32);
-	char c = '0';
-
-	for (int i = 31; i >= 0; --i) {
-		t[i] = (a[i] ^ b[i]) ^ c;
-		c = ((a[i] ^ b[i]) & c) | (a[i] & b[i]);
-	}
-
-	for (int i = 0; i < 32; ++i)
-		fin[i] = t[i];
-
-	return fin;
-}
-
- /* choice of char a or b based off w */
-char *choice(char w[32], char a[32], char b[32])
-{
-	char *c = malloc(strlen(w) / 4 + 1);
-
-	for (size_t i = 0; i < strlen(w) / 3; ++i)
-		c[i] = (w[i] == '0') ? a[i] : b[i];
-	return c;
-}
 
 int main(int argc, char **argv)
 {
